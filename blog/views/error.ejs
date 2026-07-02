@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error - My Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">Blog</a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link">Home</a>
+        <button class="theme-toggle" title="Toggle dark mode">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="error-container">
+      <div class="error-code">404</div>
+      <p class="error-message"><%= message %></p>
+      <a href="/" class="error-link">← Back to Home</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 My Blog. Built with minimalist design principles.</p>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>

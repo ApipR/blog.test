@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= post.title %> - My Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <meta name="description" content="<%= post.excerpt || post.content.substring(0, 150) %>">
+  <meta property="og:title" content="<%= post.title %>">
+  <meta property="og:description" content="<%= post.excerpt || post.content.substring(0, 150) %>">
+  <% if (post.images && post.images.length > 0) { %>
+    <meta property="og:image" content="<%= post.images[0] %>">
+  <% } %>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">Blog</a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link">Home</a>
+        <button class="theme-toggle" title="Toggle dark mode">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <article>
+      <div class="post-header">
+        <h1 class="post-title"><%= post.title %></h1>
+        <div class="post-meta">
+          <span class="post-date-published">
+            <%= new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+          </span>
+          <span>•</span>
+          <span><%= post.readingTime %> min read</span>
+          <% if (post.updated_at !== post.created_at) { %>
+            <span>•</span>
+            <span>Updated <%= new Date(post.updated_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Featured image -->
+      <% if (post.images && post.images.length > 0) { %>
+        <div style="margin: 2rem 0;">
+          <img src="<%= post.images[0] %>" alt="<%= post.title %>" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 1rem;">
+        </div>
+      <% } %>
+
+      <!-- Main content -->
+      <div class="post-body">
+        <%- post.content %>
+      </div>
+
+      <!-- Image gallery -->
+      <% if (post.images && post.images.length > 1) { %>
+        <div class="media-section">
+          <h3 class="media-section-title">Gallery</h3>
+          <div class="image-gallery">
+            <% post.images.forEach(image => { %>
+              <img src="<%= image %>" alt="Gallery image" class="gallery-image" onclick="this.style.maxWidth='90vw'; this.style.margin='auto'; this.style.display='block';">
+            <% }); %>
+          </div>
+        </div>
+      <% } %>
+
+      <!-- Videos -->
+      <% if (post.videos && post.videos.length > 0) { %>
+        <div class="media-section">
+          <h3 class="media-section-title">Videos</h3>
+          <% post.videos.forEach(video => { %>
+            <% if (video.includes('youtube.com') || video.includes('youtu.be')) { %>
+              <div class="video-container">
+                <iframe src="<%= video %>" allowfullscreen></iframe>
+              </div>
+            <% } else { %>
+              <video width="100%" controls style="border-radius: 12px; margin-bottom: 1rem;">
+                <source src="<%= video %>">
+                Your browser does not support the video tag.
+              </video>
+            <% } %>
+          <% }); %>
+        </div>
+      <% } %>
+
+      <!-- Audio -->
+      <% if (post.audio && post.audio.length > 0) { %>
+        <div class="media-section">
+          <h3 class="media-section-title">Audio</h3>
+          <% post.audio.forEach(audio => { %>
+            <audio class="audio-player" controls>
+              <source src="<%= audio %>">
+              Your browser does not support the audio element.
+            </audio>
+          <% }); %>
+        </div>
+      <% } %>
+    </article>
+
+    <!-- Related posts -->
+    <% if (relatedPosts && relatedPosts.length > 0) { %>
+      <section class="related-section">
+        <h2 class="related-title">Related Posts</h2>
+        <div class="related-posts">
+          <% relatedPosts.forEach(relatedPost => { %>
+            <a href="/post/<%= relatedPost.slug %>" class="post-card">
+              <% if (relatedPost.images && relatedPost.images.length > 0) { %>
+                <img src="<%= relatedPost.images[0] %>" alt="<%= relatedPost.title %>" class="post-card-thumbnail">
+              <% } %>
+              <h4 class="post-card-title"><%= relatedPost.title %></h4>
+              <p class="post-card-excerpt"><%= relatedPost.excerpt || relatedPost.content.substring(0, 100) %></p>
+              <div class="post-card-meta">
+                <span class="post-date">
+                  <%= new Date(relatedPost.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                </span>
+              </div>
+            </a>
+          <% }); %>
+        </div>
+      </section>
+    <% } %>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 My Blog. Built with minimalist design principles.</p>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>

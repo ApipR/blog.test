@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <meta name="description" content="A minimalist blog featuring thoughtful articles and insights">
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">Blog</a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link">Home</a>
+        <button class="theme-toggle" title="Toggle dark mode">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="home-header">
+      <h1 class="home-title">My Blog</h1>
+      <p class="home-subtitle">Thoughts, stories, and ideas</p>
+    </div>
+
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search posts..." />
+    </div>
+
+    <% if (posts && posts.length > 0) { %>
+      <div class="posts-grid">
+        <% posts.forEach(post => { %>
+          <a href="/post/<%= post.slug %>" class="post-card">
+            <% if (post.images && post.images.length > 0) { %>
+              <img src="<%= post.images[0] %>" alt="<%= post.title %>" class="post-card-thumbnail">
+            <% } %>
+            <h3 class="post-card-title"><%= post.title %></h3>
+            <p class="post-card-excerpt"><%= post.excerpt || post.content.substring(0, 150) %></p>
+            <div class="post-card-meta">
+              <span class="post-date">
+                <%= new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+              </span>
+              <span class="reading-time"><%= post.readingTime %> min read</span>
+            </div>
+          </a>
+        <% }); %>
+      </div>
+
+      <% if (pages > 1) { %>
+        <div class="pagination">
+          <% for (let i = 1; i <= pages; i++) { %>
+            <% if (i === currentPage) { %>
+              <button class="pagination-button active" disabled><%= i %></button>
+            <% } else { %>
+              <a href="/?page=<%= i %>" class="pagination-button"><%= i %></a>
+            <% } %>
+          <% } %>
+        </div>
+      <% } %>
+    <% } else { %>
+      <div style="text-align: center; padding: 3rem 1rem;">
+        <p style="color: var(--color-text-light); font-size: 1.1rem;">No posts yet. Check back soon!</p>
+      </div>
+    <% } %>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 My Blog. Built with minimalist design principles.</p>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>

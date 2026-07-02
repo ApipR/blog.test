@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - My Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">Blog</a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link">Home</a>
+        <button class="theme-toggle" title="Toggle dark mode">🌙</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="login-container">
+      <div class="login-box">
+        <h1 class="login-title">Admin Login</h1>
+
+        <% if (error) { %>
+          <div class="error-message">
+            <%= error %>
+          </div>
+        <% } %>
+
+        <form method="POST" action="/admin/login">
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-input" 
+              placeholder="Enter admin password"
+              required
+              autofocus
+            >
+          </div>
+
+          <button type="submit" class="form-button">Login</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 2rem; color: var(--color-text-light); font-size: 0.9rem;">
+          Don't have an admin account? Run <code>npm run setup</code> to create one.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2024 My Blog. Built with minimalist design principles.</p>
+  </footer>
+
+  <script src="/script.js"></script>
+</body>
+</html>

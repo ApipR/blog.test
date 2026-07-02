@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Editor - My Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="admin-page">
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">Blog</a>
+      <nav class="header-nav">
+        <a href="/admin" class="nav-link">Dashboard</a>
+        <a href="/" class="nav-link">View Site</a>
+        <a href="/admin/logout" class="nav-link" style="color: #c62828;">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <div class="admin-header">
+      <h1 class="admin-title">Post Editor</h1>
+      <div>
+        <a href="/admin" class="admin-logout" style="background-color: var(--color-text-light); margin-right: 1rem;">← Back</a>
+      </div>
+    </div>
+
+    <form id="postEditor" class="editor-container" onsubmit="return false;">
+      <input type="hidden" id="postEditId" />
+
+      <div class="editor-main">
+        <!-- Title -->
+        <div class="editor-field">
+          <label class="editor-field-label">Title</label>
+          <input type="text" id="postTitle" class="form-input" placeholder="Enter post title..." required />
+        </div>
+
+        <!-- Content -->
+        <div class="editor-field">
+          <label class="editor-field-label">Content</label>
+          <textarea id="postContent" class="editor-textarea" placeholder="Write your post content here... Markdown is supported." required></textarea>
+          <div class="char-counter" id="charCounter">0 characters</div>
+        </div>
+
+        <!-- Excerpt -->
+        <div class="editor-field">
+          <label class="editor-field-label">Excerpt (optional)</label>
+          <textarea id="postExcerpt" class="editor-textarea" placeholder="Brief summary for the post card" style="min-height: 80px;"></textarea>
+        </div>
+
+        <!-- Media Upload -->
+        <div class="editor-field">
+          <label class="editor-field-label">Media Upload</label>
+          <div id="uploadArea" class="upload-area">
+            <div class="upload-area-text">📁 Drag and drop files here</div>
+            <div class="upload-area-hint">or click to browse (Images, Videos, Audio)</div>
+            <input type="file" id="uploadInput" class="upload-input" multiple />
+          </div>
+          <div id="mediaContainer"></div>
+        </div>
+
+        <!-- Buttons -->
+        <div style="display: flex; gap: 1rem;">
+          <button type="button" id="savePostButton" class="form-button" style="flex: 1;">Save Post</button>
+          <button type="button" id="deletePostButton" class="form-button" style="flex: 1; background-color: #c62828; display: none;">Delete Post</button>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="editor-sidebar">
+        <div class="editor-field">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 600;">
+            <input type="checkbox" id="postPublished" checked />
+            Publish Post
+          </label>
+          <small style="color: var(--color-text-light);">Uncheck to save as draft</small>
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--color-medium-grey);">
+          <p style="font-size: 0.9rem; color: var(--color-text-light);">
+            💾 <strong>Auto-saved</strong>
+          </p>
+          <small style="color: var(--color-text-light);">Your post is automatically saved as you type.</small>
+        </div>
+
+        <div style="margin-top: 1rem; padding: 1rem; background-color: var(--color-white); border-radius: 8px; border: 1px solid var(--color-medium-grey);">
+          <small style="color: var(--color-text-light);">
+            <strong>Tips:</strong>
+            <ul style="margin: 0.5rem 0; padding-left: 1.2rem;">
+              <li>Use Markdown for formatting</li>
+              <li>First image becomes thumbnail</li>
+              <li>Reading time calculated auto</li>
+            </ul>
+          </small>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <script src="/script.js"></script>
+  <script>
+    // Load post if editing
+    const postEditId = new URLSearchParams(window.location.search).get('edit');
+    if (postEditId) {
+      fetch(`/admin/api/post/${postEditId}`)
+        .then(res => res.json())
+        .then(post => {
+          document.getElementById('postEditId').value = post.id;
+          document.getElementById('postTitle').value = post.title;
+          document.getElementById('postContent').value = post.content;
+          document.getElementById('postExcerpt').value = post.excerpt || '';
+          document.getElementById('postPublished').checked = post.published;
+          
+          // Load media
+          if (post.images && post.images.length) {
+            mediaFiles.images = post.images.map((url, i) => ({
+              url,
+              filename: `image-${i}`
+            }));
+          }
+          if (post.videos && post.videos.length) {
+            mediaFiles.videos = post.videos.map((url, i) => ({
+              url,
+              filename: `video-${i}`
+            }));
+          }
+          if (post.audio && post.audio.length) {
+            mediaFiles.audio = post.audio.map((url, i) => ({
+              url,
+              filename: `audio-${i}`
+            }));
+          }
+          renderMediaList();
+          
+          // Show delete button
+          document.getElementById('deletePostButton').style.display = 'block';
+        })
+        .catch(err => console.error('Error loading post:', err));
+    }
+
+    // Handle URL parameters
+    if (postEditId) {
+      window.history.replaceState({}, '', `/admin?edit=${postEditId}`);
+    }
+  </script>
+
+  <footer>
+    <p>&copy; 2024 My Blog. Built with minimalist design principles.</p>
+  </footer>
+</body>
+</html>

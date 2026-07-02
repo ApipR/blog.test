@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - My Blog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body class="admin-page">
+  <header>
+    <div class="header-container">
+      <a href="/" class="logo">Blog</a>
+      <nav class="header-nav">
+        <a href="/admin" class="nav-link">Dashboard</a>
+        <a href="/" class="nav-link">View Site</a>
+        <a href="/admin/logout" class="nav-link" style="color: #c62828;">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <div class="admin-header">
+      <h1 class="admin-title">Admin Dashboard</h1>
+      <a href="/admin/post/new" class="admin-logout" style="background-color: var(--color-accent); text-decoration: none; padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600;">+ New Post</a>
+    </div>
+
+    <div id="postsList">
+      <% if (posts && posts.length > 0) { %>
+        <div class="posts-list">
+          <div class="posts-list-header">
+            <div>Title</div>
+            <div>Date</div>
+            <div>Actions</div>
+          </div>
+          <% posts.forEach(post => { %>
+            <div class="posts-list-item">
+              <div class="posts-list-title" onclick="editPost('<%= post.id %>')"><%= post.title %></div>
+              <div class="posts-list-date">
+                <%= new Date(post.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+              </div>
+              <div class="posts-list-actions">
+                <button class="btn-small" onclick="editPost('<%= post.id %>')">Edit</button>
+                <button class="btn-small delete" onclick="deletePostConfirm('<%= post.id %>')">Delete</button>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div style="text-align: center; padding: 3rem 1rem;">
+          <p style="color: var(--color-text-light); font-size: 1.1rem;">No posts yet. <a href="/admin/post/new" style="color: var(--color-accent);">Create your first post</a></p>
+        </div>
+      <% } %>
+    </div>
+  </main>
+
+  <script src="/script.js"></script>
+  <script>
+    function editPost(id) {
+      window.location.href = `/admin/post/${id}`;
+    }
+
+    function deletePostConfirm(id) {
+      if (confirm('Are you sure you want to delete this post? This cannot be undone.')) {
+        fetch(`/admin/post/${id}`, { method: 'DELETE' })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              window.location.reload();
+            } else {
+              alert('Error deleting post');
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert('Error deleting post');
+          });
+      }
+    }
+  </script>
+
+  <footer>
+    <p>&copy; 2024 My Blog. Built with minimalist design principles.</p>
+  </footer>
+</body>
+</html>
